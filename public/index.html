@@ -3,60 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Geolocation</title>
+    <title>Location Finder</title>
 </head>
 
 <body>
-    <h3>Nama: Riza Fitria Istiqomah Zaitunah</h3>
-    <h3>NIM: 20240140111</h3>
+    <header>
+        <h1>Location Finder</h1>
+        <p>Cari informasi lokasi menggunakan MapTiler</p>
+    </header>
+    <main>
+        <section>
+            <p>
+                Nama: Riza Fitria Istiqomah Zaitunah
+            </p>
+            <p>
+                NIM: 20240140111
+            </p>
+        </section>
+    </main>
 
-    <hr>
+    <section>
+            <h2>Cari Lokasi</h2>
 
-    <h2>Cari Lokasi</h2>
+            <input 
+                type="text" 
+                id="inputLokasi" 
+                placeholder="Masukkan nama kota"
+            >
 
-    <input 
-        type="text" 
-        id="inputLokasi" 
-        placeholder="Masukkan nama kota"
-    >
+            <button onclick="cariLokasi()">Cari</button>
+    </section>
+            <h2>Hasil Pencarian</h2>
 
-    <button onclick="cariLokasi()">Cari</button>
+            <div>
+                <h3>📍 Lokasi</h3>
+                <p id="lokasi">-</p>
+            </div>
 
-    <hr>
+            <div>
+                <h3>🌎 Negara</h3>
+                <p id="negara">-</p>
+            </div>
 
-    <p>
-        Kota:
-        <span id="lokasi">-</span>
-    </p>
+            <div>
+                <h3>🏛️ Provinsi</h3>
+                <p id="provinsi">-</p>
+            </div>
 
-    <p>
-        Koordinat:
-        <span id="koordinat">-</span>
-    </p>
+            <div>
+                <h3>📌 Kecamatan</h3>
+                <p id="kecamatan">-</p>
+            </div>
 
-    <script>
+            <div>
+                <h3>↔️ Longitude</h3>
+                <p id="longitude">-</p>
+            </div>
+
+            <div>
+                <h3>↕️ Latitude</h3>
+                <p id="latitude">-</p>
+            </div>
+    <section>
+        
+    </section>
+
+        <script>
+
         function cariLokasi() {
+
             const kota = document.getElementById("inputLokasi").value;
 
+            // Mengecek input kosong
+            if (!kota) {
+                alert("Silakan masukkan lokasi terlebih dahulu.");
+                return;
+            }
+
             fetch(`/api/lokasi?kota=${encodeURIComponent(kota)}`)
+
                 .then(response => response.json())
+
                 .then(data => {
+
                     console.log(data);
 
+                    // Jika terjadi error dari backend
                     if (data.message) {
                         alert(data.message);
                         return;
                     }
 
-                    document.getElementById("lokasi").innerHTML = data.kota;
+                    // Menampilkan data lokasi
+                    document.getElementById("lokasi").innerHTML =
+                        data.lokasi;
 
-                    document.getElementById("koordinat").innerHTML =
-                        data.koordinat;
+                    document.getElementById("negara").innerHTML =
+                        data.negara;
+
+                    document.getElementById("provinsi").innerHTML =
+                        data.provinsi;
+
+                    document.getElementById("kecamatan").innerHTML =
+                        data.kecamatan;
+
+                    document.getElementById("longitude").innerHTML =
+                        data.longitude;
+
+                    document.getElementById("latitude").innerHTML =
+                        data.latitude;
+
                 })
+
                 .catch(error => {
+
                     console.error(error);
+
+                    alert("Terjadi kesalahan saat mengambil data.");
+
                 });
         }
+
     </script>
 </body>
 </html>
