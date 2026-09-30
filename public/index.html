@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geolocation</title>
+</head>
+
+<body>
+    <h3>Nama: Riza Fitria Istiqomah Zaitunah</h3>
+    <h3>NIM: 20240140111</h3>
+
+    <hr>
+
+    <h2>Cari Lokasi</h2>
+
+    <input 
+        type="text" 
+        id="inputLokasi" 
+        placeholder="Masukkan nama kota"
+    >
+
+    <button onclick="cariLokasi()">Cari</button>
+
+    <hr>
+
+    <p>
+        Kota:
+        <span id="lokasi">-</span>
+    </p>
+
+    <p>
+        Koordinat:
+        <span id="koordinat">-</span>
+    </p>
+
+    <script>
+        function cariLokasi() {
+            const kota = document.getElementById("inputLokasi").value;
+
+            fetch(`/api/lokasi?kota=${encodeURIComponent(kota)}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+
+                    if (data.message) {
+                        alert(data.message);
+                        return;
+                    }
+
+                    document.getElementById("lokasi").innerHTML = data.kota;
+
+                    document.getElementById("koordinat").innerHTML =
+                        data.koordinat;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+    </script>
+</body>
+</html>
