@@ -8,7 +8,7 @@ const PORT = 3000;
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/api/lokasi", async (req, res) =>{
-    const kota = req.query.kota;
+    const kota = (req.query.kota || "").trim();
 
     //ini buat cek input kosong di pencarian berdasar kotanya
     if(!kota){
@@ -19,13 +19,16 @@ app.get("/api/lokasi", async (req, res) =>{
 
     const apiKey = "TmW3n2IbOKaZxkghOoYB";
 
-    const url = `https://api.maptiler.com/geocoding/${kota}.json?key=${apiKey}`;
+    const url = `https://api.maptiler.com/geocoding/${encodeURIComponent(kota)}.json`;
 
         try {
-        const response = await axios.get(url);
-        console.log(response.data);
+            const response = await axios.get(url, {
+                params: { key: apiKey, language: "id", limit: 1 }
+            });
 
-        const data = response.data;
+                console.log(response.data);
+
+                const data = response.data;
 
         // Mengecek apakah lokasi ditemukan
         if (data.features.length === 0) {
@@ -34,18 +37,22 @@ app.get("/api/lokasi", async (req, res) =>{
             });
         }
 
-        const lokasi = data.features[0];
+        const feature = data.features[0];
 
-        //Mengambil koordinat
-        const koordinat = feature.geometry.coordinates;
+        const [longitude, latitude] = feature.geometry.coordinates;
+
+        const ambil = (jenis) => {
+            const item = (feature.context || []).find(c => c.id.startsWith(jenis));
+            return item ? item.text : "-";
+        };
 
         res.json({
-            lokasi: feature.matching_text || feature.text,
-            negara: feature.properties?.country || "-",
-            provinsi: feature.properties?.state || "-",
-            kecamatan: feature.properties?.county || "-",
-            longitude: koordinat[0],
-            latitude: koordinat[1]
+            lokasi: feature.place_name || feature.text,
+            negara: ambil("country"),
+            provinsi: ambil("region"),
+            kecamatan: ambil("county") !== "-" ? ambil("county") : ambil("municipality"),
+            longitude,
+            latitude
         });
 
     } catch (error) {
