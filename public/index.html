@@ -10,121 +10,97 @@
 <body>
     <header>
         <h1>Location Finder</h1>
-        <p>Cari informasi lokasi menggunakan MapTiler</p>
     </header>
+
     <main>
+        <section class="identitas">
+            <p>Nama: Riza Fitria Istiqomah Zaitunah</p>
+            <p>NIM: 20240140111</p>
+        </section>
+
         <section>
-            <p>
-                Nama: Riza Fitria Istiqomah Zaitunah
-            </p>
-            <p>
-                NIM: 20240140111
-            </p>
+            <h2>Cari Lokasi</h2>
+            <div class="form-cari">
+                <input
+                    type="text"
+                    id="inputLokasi"
+                    placeholder="Masukkan nama kota"
+                >
+                <button type="button" onclick="cariLokasi()">Cari</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>Hasil Pencarian</h2>
+            <div class="hasil">
+                <div>
+                    <h3>Lokasi</h3>
+                    <p id="lokasi">-</p>
+                </div>
+                <div>
+                    <h3>Negara</h3>
+                    <p id="negara">-</p>
+                </div>
+                <div>
+                    <h3>Provinsi</h3>
+                    <p id="provinsi">-</p>
+                </div>
+                <div>
+                    <h3>Kecamatan</h3>
+                    <p id="kecamatan">-</p>
+                </div>
+                <div>
+                    <h3>Longitude</h3>
+                    <p id="longitude">-</p>
+                </div>
+                <div>
+                    <h3>Latitude</h3>
+                    <p id="latitude">-</p>
+                </div>
+            </div>
         </section>
     </main>
 
-    <section>
-            <h2>Cari Lokasi</h2>
+    <script>
+        const input = document.getElementById("inputLokasi");
 
-            <input 
-                type="text" 
-                id="inputLokasi" 
-                placeholder="Masukkan nama kota"
-            >
-
-            <button onclick="cariLokasi()">Cari</button>
-    </section>
-            <h2>Hasil Pencarian</h2>
-
-            <div>
-                <h3>Lokasi</h3>
-                <p id="lokasi">-</p>
-            </div>
-
-            <div>
-                <h3>Negara</h3>
-                <p id="negara">-</p>
-            </div>
-
-            <div>
-                <h3>Provinsi</h3>
-                <p id="provinsi">-</p>
-            </div>
-
-            <div>
-                <h3>Kecamatan</h3>
-                <p id="kecamatan">-</p>
-            </div>
-
-            <div>
-                <h3>Longitude</h3>
-                <p id="longitude">-</p>
-            </div>
-
-            <div>
-                <h3>Latitude</h3>
-                <p id="latitude">-</p>
-            </div>
-    <section>
-        
-    </section>
-
-        <script>
+        // Tekan Enter untuk mencari
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") cariLokasi();
+        });
 
         function cariLokasi() {
+            const kota = input.value.trim();
 
-            const kota = document.getElementById("inputLokasi").value;
-
-            // Mengecek input kosong
             if (!kota) {
                 alert("Silakan masukkan lokasi terlebih dahulu.");
                 return;
             }
 
             fetch(`/api/lokasi?kota=${encodeURIComponent(kota)}`)
-
                 .then(response => response.json())
-
                 .then(data => {
-
-                    console.log(data);
-
-                    // Jika terjadi error dari backend
                     if (data.message) {
                         alert(data.message);
                         return;
                     }
 
-                    // Menampilkan data lokasi
-                    document.getElementById("lokasi").innerHTML =
-                        data.lokasi;
+                    const isi = (id, nilai) => {
+                        document.getElementById(id).textContent = nilai ?? "-";
+                    };
 
-                    document.getElementById("negara").innerHTML =
-                        data.negara;
-
-                    document.getElementById("provinsi").innerHTML =
-                        data.provinsi;
-
-                    document.getElementById("kecamatan").innerHTML =
-                        data.kecamatan;
-
-                    document.getElementById("longitude").innerHTML =
-                        data.longitude;
-
-                    document.getElementById("latitude").innerHTML =
-                        data.latitude;
-
+                    isi("lokasi", data.lokasi);
+                    isi("negara", data.negara);
+                    isi("provinsi", data.provinsi);
+                    isi("kecamatan", data.kecamatan);
+                    isi("longitude", data.longitude);
+                    isi("latitude", data.latitude);
                 })
-
                 .catch(error => {
-
                     console.error(error);
-
                     alert("Terjadi kesalahan saat mengambil data.");
-
                 });
         }
-
     </script>
 </body>
 </html>

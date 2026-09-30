@@ -19,7 +19,7 @@ app.get("/api/lokasi", async (req, res) =>{
 
     const apiKey = "TmW3n2IbOKaZxkghOoYB";
 
-    const url = `https://api.maptiler.com/geocoding/${encodeURIComponent(kota)}.json?key=${apiKey}`;
+    const url = `https://api.maptiler.com/geocoding/${kota}.json?key=${apiKey}`;
 
         try {
         const response = await axios.get(url);
