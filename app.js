@@ -27,12 +27,25 @@ app.get("/api/lokasi", async (req, res) =>{
 
         const data = response.data;
 
-        const lokasi = data.features[0].matching_text;
-        const koordinat = data.features[0].geometry.coordinates;
+        // Mengecek apakah lokasi ditemukan
+        if (data.features.length === 0) {
+            return res.status(404).json({
+                message: "Lokasi tidak ditemukan"
+            });
+        }
+
+        const lokasi = data.features[0];
+
+        //Mengambil koordinat
+        const koordinat = feature.geometry.coordinates;
 
         res.json({
-            kota: lokasi,
-            koordinat: koordinat
+            lokasi: feature.matching_text || feature.text,
+            negara: feature.properties?.country || "-",
+            provinsi: feature.properties?.state || "-",
+            kecamatan: feature.properties?.county || "-",
+            longitude: koordinat[0],
+            latitude: koordinat[1]
         });
 
     } catch (error) {
