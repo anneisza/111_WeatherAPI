@@ -16,4 +16,8 @@ app.get("/api/lokasi", async (req, res) =>{
             message: "Lokasi harus diisi"
         });
     }
+
+    const apiKey = "TmW3n2IbOKaZxkghOoYB";
+
+    const url = `https://api.maptiler.com/geocoding/${encodeURIComponent(kota)}.json?key=${apiKey}`;
 });
